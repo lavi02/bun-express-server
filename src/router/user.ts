@@ -1,6 +1,7 @@
 import express from 'express';
 import userService from '@/service/user';
 import authMiddleware from '@/service/middleware';
+import JwtService from '@/service/jwt';
 
 const router = express.Router();
 
@@ -21,15 +22,16 @@ router.post('/login', async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
-    // 로그인 로직 구현 (예: JWT 발급)
-    res.status(200).json({ message: 'Logged in successfully' });
+
+    const token = await JwtService.generateToken(email);
+    res.status(200).json({ message: 'Logged in successfully', token: token });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
 });
 
 router.get('/test', authMiddleware, (req, res) => {
-  res.json({ message: 'You have accessed a protected route', user: req.user });
+  res.json({ message: 'You have accessed a protected route', user: req.headers.authorization });
 });
 
 module.exports = router;

@@ -1,4 +1,4 @@
-import jwtService from '@/service/jwt';
+import JwtService from '@/service/jwt';
 
 const authMiddleware = async (req: any, res: any, next: any) => {
   try {
@@ -7,7 +7,7 @@ const authMiddleware = async (req: any, res: any, next: any) => {
       return res.status(401).json({ message: 'No token provided' });
     }
 
-    const decoded = await jwtService.verifyToken(token);
+    const decoded = await JwtService.verifyToken(token);
     req.user = decoded;
     next();
   } catch (error) {
@@ -15,4 +15,4 @@ const authMiddleware = async (req: any, res: any, next: any) => {
   }
 };
 
-module.exports = authMiddleware;
+export default authMiddleware;

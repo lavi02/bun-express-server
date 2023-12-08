@@ -1,11 +1,11 @@
 
 import jwt from 'jsonwebtoken';
-import jwtConfig from './jwtConfig';
-import redisClient from './redisClient';
+import CONFIG from '@/config/index';
+import redisClient from '@/database/redis/index';
 
 class JwtService {
   async generateToken(payload: string) {
-    const token = jwt.sign(payload, jwtConfig.secret, { expiresIn: jwtConfig.expiresIn });
+    const token = jwt.sign(payload, CONFIG.secret, { expiresIn: CONFIG.expiresIn });
     await redisClient.set(token, JSON.stringify(payload), 3600);
     return token;
   }
@@ -17,7 +17,7 @@ class JwtService {
         throw new Error('Token not found in Redis');
       }
 
-      return jwt.verify(token, jwtConfig.secret);
+      return jwt.verify(token, CONFIG.secret);
     } catch (err) {
       console.error(err);
       throw err;
@@ -26,7 +26,7 @@ class JwtService {
 
   async invalidateToken(token: string) {
     try {
-      await redisClient.delete(token);
+      await redisClient.del(token);
     } catch (err) {
       console.error(err);
     }
@@ -37,4 +37,4 @@ class JwtService {
   }
 }
 
-module.exports = new JwtService();
+export default new JwtService();

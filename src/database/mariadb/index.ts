@@ -1,9 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 
 class PrismaClientInstance {
+  prisma: PrismaClient;
+
   constructor() {
     this.prisma = new PrismaClient();
   }
 }
 
-module.exports = new PrismaClientInstance().prisma;
+export default new PrismaClientInstance().prisma;
